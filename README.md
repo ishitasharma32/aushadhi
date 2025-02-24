@@ -9,6 +9,26 @@ An advanced system for extracting and visualizing medication information from ha
 
 Aushadhi addresses the critical healthcare challenge of interpreting illegible medical prescriptions by using AI to extract key medication details (name, dosage, frequency, duration, route) and presenting them with confidence scores in an interactive dashboard.
 
+```mermaid
+graph TD
+    A[User Uploads Prescription Image 🖼️] --> B{Preprocessing}
+    B --> |OpenCV Denoising & Binarization| C[OCR Engine]
+    C --> |Tesseract + Custom Config| D[Raw OCR Text]
+    D --> E{Medical NLP Parser}
+    E --> |spaCy + Rule-Based Logic| F[Structured Data]
+    F --> G{Drug Validation}
+    G --> |Fuzzy Matching + Drug DB| H[Validated Prescription 📜]
+    G --> |Flagged Errors| I[Alerts ⚠️]
+    H --> J[Output to User/Doctor]
+    I --> J
+
+    style A fill:#4CAF50,stroke:#388E3C
+    style C fill:#2196F3,stroke:#1976D2
+    style E fill:#FF9800,stroke:#F57C00
+    style G fill:#E91E63,stroke:#C2185B
+    style J fill:#9C27B0,stroke:#7B1FA2
+```
+
 ## ✨ Features
 
 - Extracts medication details from handwritten prescription images
@@ -30,7 +50,7 @@ We used the [Illegible Medical Prescription Images Dataset](https://www.kaggle.c
 - Expert annotations for medication entities
 - Various prescription formats and layouts
 
-## 🛠️ Technical Approach
+## 🛠️ Technical Approach 
 
 Our solution implements a multi-stage pipeline:
 
@@ -63,6 +83,37 @@ Our solution implements a multi-stage pipeline:
 | Frequency Accuracy | 42.3% | 87.9% |
 | Overall F1 Score | 0.41 | 0.89 |
 | Processing Time/Image | 1.2s | 0.8s |
+
+## 🛠️ Core Code Snippet  
+This is the optimized logic for processing prescriptions:
+
+```python
+# app.py (Simplified Core Logic)
+import cv2
+import pytesseract
+import spacy
+from difflib import get_close_matches
+
+# Load medical NLP model and drug database
+nlp = spacy.load("en_core_web_sm")
+DRUG_DB = ["metformin", "insulin", "amlodipine", "atorvastatin"]  # Sample
+
+def preprocess_image(image_path):
+    """Optimized image cleanup pipeline"""
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    denoised = cv2.fastNlMeansDenoising(gray, h=10)
+    return cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+def medical_ocr(image_path):
+    """Domain-tuned OCR with priority to uppercase text"""
+    preprocessed = preprocess_image(image_path)
+    custom_config = r'--oem 3 --psm 6 -c tessedit_char_whitelist="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789mg "'
+    text = pytesseract.image_to_string(preprocessed, config=custom_config)
+    return text.strip()
+
+# ... (rest of the code)
+```
 
 ## 🚀 Installation
 
