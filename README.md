@@ -38,9 +38,6 @@ graph TD
 - Export functionality to CSV and JSON formats
 - Detailed confidence analytics for medical professionals
 
-## 🖥️ Demo
-
-![Dashboard Demo](/assets/dashboard-preview.png)
 
 ## 📊 Dataset
 
