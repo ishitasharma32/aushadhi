@@ -1,4 +1,4 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -33,5 +33,16 @@ ENV/
 .streamlit/
 
 # Project specific
-uploads/
+uploads/*
+!uploads/.gitkeep
 *.log
+*.jpg
+*.jpeg
+*.png
+
+# Sensitive data
+.env
+
+# Dataset 
+test_data/*
+!test_data/.gitkeep
